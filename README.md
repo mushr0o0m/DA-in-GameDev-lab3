@@ -8,7 +8,7 @@
 | Задание | Выполнение | Баллы |
 | ------ | ------ | ------ |
 | Задание 1 | * | 60 |
-| Задание 2 | # | 20 |
+| Задание 2 | * | 20 |
 | Задание 3 | # | 20 |
 
 знак "*" - задание выполнено; знак "#" - задание не выполнено;
@@ -141,8 +141,60 @@ public class RollerAgent : Agent
 ![Screen recording](https://github.com/mushr0o0m/DA-in-GameDev-lab3-/blob/main/Meta-files/RollerBall-incorrect.gif) 
 
 ## Задание 2
-### Реализовать запись в Google-таблицу набора данных, полученных с помощью линейной регрессии из лабораторной работы № 1.
+### Подробно описать каждую строку файла конфигурации нейронной сети и найдите информацию о компонентах Decision Requester, Behavior Parameters, добавленных на сфере.
 
+- Файл конфигурации:
+
+```yml
+
+behaviors:
+  RollerBall:
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 10
+      buffer_size: 100
+      learning_rate: 3.0e-4
+      beta: 5.0e-4
+      epsilon: 0.2
+      lambd: 0.99
+      num_epoch: 3
+      learning_rate_schedule: linear
+    network_settings:
+      normalize: false
+      hidden_units: 128
+      num_layers: 2
+    reward_signals:
+      extrinsic:
+        gamma: 0.99
+        strength: 1.0
+    max_steps: 500000
+    time_horizon: 64
+    summary_freq: 10000
+
+```
+behaviors: - 
+RollerBall: - 
+trainer_type: ppo - 
+hyperparameters: - 
+batch_size: 10 - 
+buffer_size: 100 - 
+learning_rate: 3.0e-4 - 
+beta: 5.0e-4 - 
+epsilon: 0.2 - 
+lambd: 0.99 - 
+num_epoch: 3 - 
+learning_rate_schedule: linear - 
+network_settings: - 
+normalize: false - 
+hidden_units: 128 - 
+num_layers: 2 - 
+reward_signals: - 
+extrinsic: - Раздел позволяющий задать параметры для внешних и внутренних сигналов вознаграждения
+gamma: 0.99 -  Коэффициент дисконтирования для будущих вознаграждений, поступающих из окружающей среды. Он определяет как будет действовать агент для 
+strength: 1.0 - Коэффициент, на который умножается вознаграждение, выдаваемое средой. Типичные диапазоны зависят от сигнала вознаграждения
+max_steps: 500000 - Общее количество шагов, которые необходимо выполнить в среде перед завершением процесса обучения
+time_horizon: 64 - Это количество шагов которое необходимо сделать агенту, чтобы добавить его в буфер опыта. Этот параметр балансирует дисперстную оценку
+summary_freq: 10000 - Количество опытов которое необходимо провести, чтобы появилась статистика обучения в командной строке
 
 
 
