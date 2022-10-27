@@ -59,8 +59,86 @@
 
 - Объекту на сцене RollerAgent были добавлены и настроены 3 компанента и CS-скрипт
 
+  - Компоненты объекта:
   
+  ![image](https://user-images.githubusercontent.com/105949115/198354743-c37c286d-049c-45ac-8f12-aa8e7c5669e7.png)
+  
+  - Код скрипта RollerAgent.cs:
 
+```cs
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Unity.MLAgents;
+using Unity.MLAgents.Sensors;
+using Unity.MLAgents.Actuators;
+
+public class RollerAgent : Agent
+{
+    Rigidbody rBody;
+    // Start is called before the first frame update
+    void Start()
+    {
+        rBody = GetComponent<Rigidbody>();
+    }
+
+    public Transform Target;
+    public override void OnEpisodeBegin()
+    {
+        if (this.transform.localPosition.y < 0)
+        {
+            this.rBody.angularVelocity = Vector3.zero;
+            this.rBody.velocity = Vector3.zero;
+            this.transform.localPosition = new Vector3(0, 0.5f, 0);
+        }
+
+        Target.localPosition = new Vector3(Random.value * 8-4, 0.5f, Random.value * 8-4);
+    }
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        sensor.AddObservation(Target.localPosition);
+        sensor.AddObservation(this.transform.localPosition);
+        sensor.AddObservation(rBody.velocity.x);
+        sensor.AddObservation(rBody.velocity.z);
+    }
+    public float forceMultiplier = 10;
+    public override void OnActionReceived(ActionBuffers actionBuffers)
+    {
+        Vector3 controlSignal = Vector3.zero;
+        controlSignal.x = actionBuffers.ContinuousActions[0];
+        controlSignal.z = actionBuffers.ContinuousActions[1];
+        rBody.AddForce(controlSignal * forceMultiplier);
+
+        float distanceToTarget = Vector3.Distance(this.transform.localPosition, Target.localPosition);
+
+        if(distanceToTarget < 1.42f)
+        {
+            SetReward(1.0f);
+            EndEpisode();
+        }
+        else if (this.transform.localPosition.y < 0)
+        {
+            EndEpisode();
+        }
+    }
+}
+
+```
+
+- После настройки объекта был добавлен файл конфигурации [нейронной сети]() и запущена работа ml-агента и симуляция сцены.
+
+![image](https://user-images.githubusercontent.com/105949115/198356070-6a597762-ab08-4445-b534-493258d536ae.png)
+
+![image](https://user-images.githubusercontent.com/105949115/198355941-78e21dfd-4dda-4bac-97ea-6005393fd02a.png)
+
+- После того как модель обучилась на 90 тыс. итераций, получившаяся модель была протестирована.
+
+![Screen recording]()
+
+- Вывод: В ходе работы была совершена ошибка и получена неверно обучившаяся модель, у элементов сцены были неправильно заданы координаты. Так получилось увидеть некорректное поведение модели после обучения. Ошибка была исправлена и получена корректая модель, в ходе ее обучения было замечено, количество итераций, сделанных при обучении, и количество ошибок обратно пропорцианально. Далее идет демонстрация некорректной модели
+
+![Screen recording]() 
 
 ## Задание 2
 ### Реализовать запись в Google-таблицу набора данных, полученных с помощью линейной регрессии из лабораторной работы № 1.
