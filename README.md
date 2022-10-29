@@ -217,10 +217,90 @@ behaviors:
 ![image](https://user-images.githubusercontent.com/105949115/198739617-1e50d034-fafc-4cd8-8779-b503eb8ce4ca.png)
 
 ## Задание 3
-### Самостоятельно разработать сценарий воспроизведения звукового сопровождения в Unity в зависимости от изменения считанных данных в задании 2.
+### Дороботать сцену и обучить ML-Agent таким образом, чтобы шар перемещался между двумя кубами разного цвета. Кубы должны, как и в первом задании, случайно изменять координаты на плоскости
 
+- Первым шагом был создан еще один куб, на него добавлен материал, который задавал зеленый цвет. Также был создан пустой объект, это новый Target. По умолчанию он распологается между двумя кубами, так мы можем видеть точку через которую должен пройти шар, после того, как кубы изменят свою позицию.
 
+![image](https://user-images.githubusercontent.com/105949115/198836335-d93887b0-e0fc-4419-8754-3133e36f8850.png)
 
+- Далее был изменен скрипт RollerAgent.cs в соответсвии с новой задачей. Теперь в методе OnEpisodeBegin() генерируется не только позиция первого куба но и второго, а позиция target`a вычисляется как середина между координатми firstCube и secondCube. Также было изменено расстаяние, на которое нужно приблизиться шару, чтобы получить вознограждение.
+
+```cs
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Unity.MLAgents;
+using Unity.MLAgents.Sensors;
+using Unity.MLAgents.Actuators;
+
+public class RollerAgent : Agent
+{
+    [SerializeField] private float forceMultiplier = 10;
+    [SerializeField] private Transform firstCube;
+    [SerializeField] private Transform secondCube;
+    [SerializeField] private Transform target;
+    private Rigidbody rBody;
+
+    void Start()
+    {
+        rBody = GetComponent<Rigidbody>();
+    }
+
+    public override void OnEpisodeBegin()
+    {
+        if (this.transform.localPosition.y < 0)
+        {
+            this.rBody.angularVelocity = Vector3.zero;
+            this.rBody.velocity = Vector3.zero;
+            this.transform.localPosition = new Vector3(0, 0.5f, 0);
+        }
+
+        firstCube.localPosition = new Vector3(Random.value * 8-4, 0.5f, Random.value * 8-4);
+        secondCube.localPosition = new Vector3(Random.value * 8-4, 0.5f, Random.value * 8-4);
+        target.localPosition = new Vector3(
+            (firstCube.localPosition.x + secondCube.localPosition.x) / 2,
+            0.5f,
+            (firstCube.localPosition.z + secondCube.localPosition.z) / 2);
+    }
+
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        sensor.AddObservation(target.localPosition);
+        sensor.AddObservation(this.transform.localPosition);
+        sensor.AddObservation(rBody.velocity.x);
+        sensor.AddObservation(rBody.velocity.z);
+    }
+    
+    public override void OnActionReceived(ActionBuffers actionBuffers)
+    {
+        Vector3 controlSignal = Vector3.zero;
+        controlSignal.x = actionBuffers.ContinuousActions[0];
+        controlSignal.z = actionBuffers.ContinuousActions[1];
+        rBody.AddForce(controlSignal * forceMultiplier);
+
+        float distanceToTarget = Vector3.Distance(this.transform.localPosition, target.localPosition);
+
+        if(distanceToTarget < 1.2f)
+        {
+            SetReward(1.0f);
+            EndEpisode();
+        }
+        else if (this.transform.localPosition.y < 0)
+        {
+            EndEpisode();
+        }
+    }
+}
+
+```
+
+-  Затем сцена была добавлена в Prefab и созданы ее копии, для того чтобы начать обучение. Оно заняло ~27 мин., после чего я проверил работу модели.
+
+![image](https://user-images.githubusercontent.com/105949115/198836830-6d1fa78d-5d1e-4aa4-ae9d-089a6ee57b42.png)
+
+- Демонстрация работы модели.
+
+![](![Screen recording](https://github.com/mushr0o0m/DA-in-GameDev-lab3-/blob/main/Meta-files/RollerBall-correct.gif))
 ## Выводы
 
 
