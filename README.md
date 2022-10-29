@@ -143,7 +143,7 @@ public class RollerAgent : Agent
 ## Задание 2
 ### Подробно описать каждую строку файла конфигурации нейронной сети и найдите информацию о компонентах Decision Requester, Behavior Parameters, добавленных на сфере.
 
-- Файл конфигурации и описание каждой строки. Для описания я воспользовался [этой документацией](https://github.com/Unity-Technologies/ml-agents/blob/release_18_docs/docs/Training-Configuration-File.md#common-trainer-configurations)
+- Файл конфигурации и описание каждой строки. Для описания я воспользовался [этой документацией](https://github.com/Unity-Technologies/ml-agents/blob/release_18_docs/docs/Training-Configuration-File.md#common-trainer-configurations).
 
 ```yml
 
