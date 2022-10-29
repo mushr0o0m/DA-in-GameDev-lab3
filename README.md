@@ -9,7 +9,7 @@
 | ------ | ------ | ------ |
 | Задание 1 | * | 60 |
 | Задание 2 | * | 20 |
-| Задание 3 | # | 20 |
+| Задание 3 | * | 20 |
 
 знак "*" - задание выполнено; знак "#" - задание не выполнено;
 
@@ -126,7 +126,7 @@ public class RollerAgent : Agent
 
 ```
 
-- После настройки объекта был добавлен файл конфигурации [нейронной сети]() и запущена работа ml-агента и симуляция сцены.
+- После настройки объекта был добавлен файл конфигурации [нейронной сети](https://github.com/mushr0o0m/DA-in-GameDev-lab3/blob/main/Meta-files/rollerball_config.yaml) и запущена работа ml-агента и симуляция сцены.
 
 ![image](https://user-images.githubusercontent.com/105949115/198356070-6a597762-ab08-4445-b534-493258d536ae.png)
 
@@ -300,7 +300,7 @@ public class RollerAgent : Agent
 
 - Демонстрация работы модели.
 
-![](![Screen recording](https://github.com/mushr0o0m/DA-in-GameDev-lab3-/blob/main/Meta-files/RollerBall-correct.gif))
+![Screen recording](https://github.com/mushr0o0m/DA-in-GameDev-lab3/blob/main/Meta-files/20221029_193012.gif)
 ## Выводы
 
 
